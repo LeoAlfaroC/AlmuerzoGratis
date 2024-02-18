@@ -1,0 +1,60 @@
+services:
+  frontend:
+    build:
+      context: frontend/docker
+      args:
+        user: frontend
+        uid: 1000
+    ports:
+      - "80:5173"
+    volumes:
+      - ./frontend:/usr/src/app
+
+  api-php:
+    build:
+      context: api/docker/php
+      args:
+        user: api
+        uid: 1000
+    volumes:
+      - ./api:/var/www/html
+    networks:
+      - backend
+
+  api-nginx:
+    build:
+      context: api/docker/nginx
+      args:
+        user: api
+        uid: 1000
+    ports:
+      - "81:80"
+    networks:
+      - backend
+    depends_on:
+      - api-php
+
+  cocina-php:
+    build:
+      context: api/docker/php
+      args:
+        user: api
+        uid: 1000
+    volumes:
+      - ./api:/var/www/html
+    networks:
+      - backend
+
+  bodega-php:
+    build:
+      context: api/docker/php
+      args:
+        user: api
+        uid: 1000
+    volumes:
+      - ./api:/var/www/html
+    networks:
+      - backend
+
+networks:
+  backend:
