@@ -4,6 +4,9 @@ FROM php:8.3.3-fpm
 ARG user
 ARG uid
 
+RUN sed -i 's/9000/9001/' /usr/local/etc/php-fpm.d/zz-docker.conf
+EXPOSE 9001
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     apt-transport-https \
@@ -16,14 +19,9 @@ RUN apt-get update && apt-get install -y \
     unzip \
     zip
 
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug \
-    && echo "xdebug.mode=debug,coverage\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.idekey=\"PHPSTORM\"\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_port=9003\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.discover_client_host=1\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_host=host.docker.internal\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.cli_color=1\n" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+RUN pecl install --force redis \
+&& rm -rf /tmp/pear \
+&& docker-php-ext-enable redis
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
