@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\PreparingOrder;
 use App\Models\Order;
 use App\Models\Recipe;
 use App\Serializers\OrderSerializer;
@@ -19,7 +20,7 @@ class PrepareOrder implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(private readonly array $user)
+    public function __construct(readonly private array $user)
     {
         //
     }
@@ -38,6 +39,8 @@ class PrepareOrder implements ShouldQueue
                 'user_id' => $this->user['user_id'],
                 'recipe_id' => $recipe->id,
             ]);
+
+        broadcast(new PreparingOrder($new_order));
 
         info('Publishing ' . config('channels.request-ingredients'));
         info('Payload:');

@@ -2,8 +2,11 @@
 
 namespace App\Jobs;
 
+use App\Events\BuyingIngredients;
+use App\Events\CheckingIngredients;
 use App\Models\Ingredient;
 use App\Models\Inventory;
+use App\Models\Purchase;
 use App\Services\MarketService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -31,12 +34,12 @@ class CheckIngredients implements ShouldQueue
      */
     public function handle(MarketService $market_service): void
     {
+        broadcast(new CheckingIngredients($this->order['order_id'], $this->order['user_id']));
+
         DB::beginTransaction();
         $ingredients = Ingredient::query()
             ->whereIn('name', Arr::pluck($this->order['ingredients'], 'name'))
             ->get();
-
-        info(print_r(Arr::pluck($this->order['ingredients'], 'name'), true));
 
         try {
             while (!$this->ingredientsAreReady($this->order['ingredients'])) {
@@ -45,21 +48,28 @@ class CheckIngredients implements ShouldQueue
                         continue;
                     }
 
-                    info(print_r($ingredient['name'], true));
-                    info(print_r($ingredients->toArray(), true));
                     $ingredient_model = $ingredients->where('name', $ingredient['name'])->first();
                     $ingredient_id = $ingredient_model->id;
                     $qty_available = Inventory::where('ingredient_id', $ingredient_id)->first()->quantity;
-                    info('Available: ' . $qty_available);
+                    info($ingredient['name']);
+                    info('Quantity available: ' . $qty_available);
 
                     if ($qty_available >= $ingredient['quantity']) {
                         info($ingredient['name'] . ' READY');
                         $ingredient['ready'] = true;
                         $ingredient['id'] = $ingredient_id;
                     } else {
+                        broadcast(new BuyingIngredients($this->order['order_id'], $this->order['user_id']));
                         info('BUYING ' . $ingredient['name']);
                         $quantity_bought = $market_service->buyIngredient($ingredient_model);
                         info('BOUGHT ' . $quantity_bought);
+
+                        Purchase::query()
+                            ->create([
+                                'ingredient_id' => $ingredient_id,
+                                'quantity' => $quantity_bought,
+                            ]);
+
                         Inventory::query()
                             ->where('ingredient_id', $ingredient_id)
                             ->increment('quantity', $quantity_bought);

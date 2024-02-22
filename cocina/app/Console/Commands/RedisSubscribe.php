@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\BroadcastOrders;
 use App\Jobs\FinishOrder;
 use App\Jobs\PrepareOrder;
 use Illuminate\Console\Command;
@@ -42,6 +43,11 @@ class RedisSubscribe extends Command
             if ($channel === config('channels.ingredients-ready')) {
                 info('Dispatching FinishOrder');
                 FinishOrder::dispatch(json_decode($message, true))->delay(now()->addSecond());
+            }
+
+            if ($channel === config('channels.broadcast-orders')) {
+                info('Dispatching BroadcastOrders');
+                BroadcastOrders::dispatch(json_decode($message, true));
             }
         });
     }

@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -10,15 +9,19 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class OrderDispatched implements ShouldBroadcast
+class BuyingIngredients implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels, InteractsWithQueue;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(readonly private User $user)
+    public function __construct(
+        readonly public int $order_id,
+        readonly private int $user_id,
+    )
     {
+        //
     }
 
     /**
@@ -29,7 +32,7 @@ class OrderDispatched implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('App.Models.User.' . $this->user->id),
+            new PrivateChannel('App.Models.User.' . $this->user_id),
         ];
     }
 }

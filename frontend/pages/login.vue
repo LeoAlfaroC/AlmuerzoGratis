@@ -1,9 +1,9 @@
 <script lang="ts" setup>
+  const errorMessage = ref();
   const form = ref({
     email: "test@example.com",
     password: "password",
   });
-  const errorMessage = ref();
 
   const auth = useAuthStore();
 
@@ -15,12 +15,8 @@
     const { error } = await auth.login(form.value);
 
     if (!error.value) {
-      const {$echo} = useNuxtApp();
-      $echo.private('App.Models.User.1')
-          .listen('OrderDispatched', () => {
-            console.log('Received!');
-          })
-          .error((error: any) => console.log(error));
+      const {$echo, $attachListeners} = useNuxtApp();
+      $attachListeners($echo, auth.user?.id);
 
       return navigateTo("/");
     } else {
