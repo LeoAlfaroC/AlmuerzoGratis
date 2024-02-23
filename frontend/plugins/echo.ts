@@ -77,10 +77,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       })
       .listen('CheckingIngredients', (e: any) => {
         console.log('CheckingIngredients', e);
+        ordersStore.addOrUpdateOrder(e.order);
         statusStore.status = 'Revisando disponibilidad de ingredientes';
       })
       .listen('BuyingIngredients', (e: any) => {
         console.log('BuyingIngredients', e);
+        ordersStore.addOrUpdateOrder(e.order);
         statusStore.status = 'Comprando ingredientes faltantes';
       })
       .listen('IngredientPurchased', (e: any) => {

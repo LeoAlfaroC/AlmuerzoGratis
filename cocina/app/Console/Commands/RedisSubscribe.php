@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Jobs\BroadcastOrders;
+use App\Jobs\BuyingIngredientsForOrder;
+use App\Jobs\CheckingIngredientsForOrder;
 use App\Jobs\FinishOrder;
 use App\Jobs\PrepareOrder;
 use Illuminate\Console\Command;
@@ -40,6 +42,16 @@ class RedisSubscribe extends Command
             if ($channel === config('channels.new-order')) {
                 info('Dispatching PrepareOrder');
                 PrepareOrder::dispatch(json_decode($message, true));
+            }
+
+            if ($channel === config('channels.checking-ingredients')) {
+                info('Dispatching CheckingIngredientsForOrder');
+                CheckingIngredientsForOrder::dispatch(json_decode($message, true));
+            }
+
+            if ($channel === config('channels.buying-ingredients')) {
+                info('Dispatching BuyingIngredientsForOrder');
+                BuyingIngredientsForOrder::dispatch(json_decode($message, true));
             }
 
             if ($channel === config('channels.ingredients-ready')) {
