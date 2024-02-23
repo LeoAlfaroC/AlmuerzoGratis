@@ -11,10 +11,10 @@ const ordersStore = useOrdersStore();
     <thead>
     <tr>
       <th class="text-left">
-        Name
+        Receta
       </th>
       <th class="text-left">
-        Calories
+        Estado
       </th>
     </tr>
     </thead>

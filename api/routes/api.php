@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\RecipeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,4 +27,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('get-orders', [OrderController::class, 'index']);
     Route::post('get-purchases', [PurchaseController::class, 'index']);
+    Route::post('get-recipes', [InventoryController::class, 'index']);
+    Route::post('get-inventory', [RecipeController::class, 'index']);
 });

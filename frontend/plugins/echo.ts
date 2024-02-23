@@ -3,12 +3,16 @@ import Pusher from "pusher-js";
 import {useOrdersStore} from "~/stores/useOrdersStore";
 import {useStatusStore} from "~/stores/useStatusStore";
 import {usePurchasesStore} from "~/stores/usePurchasesStore";
+import {useRecipesStore} from "~/stores/useRecipesStore";
+import {useInventoryStore} from "~/stores/useInventoryStore";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
   const statusStore = useStatusStore();
   const ordersStore = useOrdersStore();
   const purchasesStore = usePurchasesStore();
+  const recipesStore = useRecipesStore();
+  const inventoryStore = useInventoryStore();
 
   const echo = new Echo({
     broadcaster: 'pusher',
@@ -53,6 +57,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   function attachListeners(echo: Echo, user_id: number | undefined) {
     ordersStore.fetchOrders();
     purchasesStore.fetchPurchases();
+    recipesStore.fetchRecipes();
+    inventoryStore.fetchInventory();
 
     echo.private('App.Models.User.' + user_id)
       .listen('SendingOrder', () => {
@@ -94,6 +100,14 @@ export default defineNuxtPlugin((nuxtApp) => {
         console.log('OrderReady', e);
         ordersStore.addOrUpdateOrder(e.order);
         statusStore.status = 'Orden lista!';
+      })
+      .listen('RecipesListed', (e: any) => {
+        console.log('RecipesListed', e);
+        recipesStore.updateRecipes(e.recipes);
+      })
+      .listen('InventoryListed', (e: any) => {
+        console.log('InventoryListed', e);
+        inventoryStore.updateInventory(e.inventory);
       });
   }
 

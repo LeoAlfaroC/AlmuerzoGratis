@@ -37,7 +37,6 @@ async function handleClick() {
     <v-col>
       <OrderTable/>
     </v-col>
-
     <v-col>
       <PurchasesTable/>
     </v-col>

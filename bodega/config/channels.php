@@ -7,4 +7,5 @@ return [
     'checking-ingredients' => 'kitchen.checking-ingredients',
     'buying-ingredients' => 'kitchen.buying-ingredients',
     'broadcast-purchases' => 'laravel_database_storeroom.broadcast-purchases',
+    'broadcast-inventory' => 'laravel_database_storeroom.broadcast-inventory',
 ];

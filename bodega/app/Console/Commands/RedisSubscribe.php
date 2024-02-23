@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\BroadcastInventory;
 use App\Jobs\BroadcastPurchases;
 use App\Jobs\CheckIngredients;
 use Illuminate\Console\Command;
@@ -44,6 +45,11 @@ class RedisSubscribe extends Command
             if ($channel === config('channels.broadcast-purchases')) {
                 info('Dispatching BroadcastPurchases');
                 BroadcastPurchases::dispatch(json_decode($message, true));
+            }
+
+            if ($channel === config('channels.broadcast-inventory')) {
+                info('Dispatching BroadcastInventory');
+                BroadcastInventory::dispatch();
             }
         });
     }

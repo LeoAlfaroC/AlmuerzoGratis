@@ -98,6 +98,8 @@ class CheckIngredients implements ShouldQueue
 
         $this->reduceInventory($this->order['ingredients']);
 
+        BroadcastInventory::dispatch();
+
         DB::commit();
 
         info('Publishing ' . config('channels.ingredients-ready'));

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-
 import {usePurchasesStore} from "~/stores/usePurchasesStore";
 
 const purchasesStore = usePurchasesStore();
@@ -12,10 +11,10 @@ const purchasesStore = usePurchasesStore();
     <thead>
     <tr>
       <th class="text-left">
-        Name
+        Ingrediente
       </th>
       <th class="text-left">
-        Calories
+        Cantidad comprada
       </th>
     </tr>
     </thead>

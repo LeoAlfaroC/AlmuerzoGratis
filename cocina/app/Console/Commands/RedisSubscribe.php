@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\BroadcastOrders;
+use App\Jobs\BroadcastRecipes;
 use App\Jobs\BuyingIngredientsForOrder;
 use App\Jobs\CheckingIngredientsForOrder;
 use App\Jobs\FinishOrder;
@@ -62,6 +63,11 @@ class RedisSubscribe extends Command
             if ($channel === config('channels.broadcast-orders')) {
                 info('Dispatching BroadcastOrders');
                 BroadcastOrders::dispatch(json_decode($message, true));
+            }
+
+            if ($channel === config('channels.broadcast-recipes')) {
+                info('Dispatching BroadcastRecipes');
+                BroadcastRecipes::dispatch();
             }
         });
     }

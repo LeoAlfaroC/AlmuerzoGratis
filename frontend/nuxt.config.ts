@@ -2,7 +2,9 @@
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 
 export default defineNuxtConfig({
-  devtools: {enabled: true},
+  devtools: {
+    enabled: false,
+  },
   runtimeConfig: {
     public: {
       api_url: process.env.API_URL,
