@@ -7,8 +7,12 @@ const recipesStore = useRecipesStore();
 <template>
   <h2>Recetas disponibles</h2>
 
+  <br>
+
   <template v-for="recipe in recipesStore.recipes"
             :key="recipe.id">
+    <h3>{{ recipe.name }}</h3>
+
     <v-table>
       <thead>
       <tr>
