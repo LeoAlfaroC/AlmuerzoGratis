@@ -2,23 +2,32 @@
 import {useOrdersStore} from "~/stores/useOrdersStore";
 
 const ordersStore = useOrdersStore();
-
-const columns = [
-  {
-    key: 'recipe.name',
-    label: 'Receta',
-  },
-  {
-    key: 'status',
-    label: 'Estado',
-  },
-];
 </script>
 
 <template>
   <h2>Órdenes recientes</h2>
-  <UDivider />
-  <UTable :rows="ordersStore.orders" :columns="columns"/>
+
+  <v-table>
+    <thead>
+    <tr>
+      <th class="text-left">
+        Name
+      </th>
+      <th class="text-left">
+        Calories
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr
+        v-for="order in ordersStore.orders"
+        :key="order.name"
+    >
+      <td>{{ order.recipe.name }}</td>
+      <td>{{ order.status }}</td>
+    </tr>
+    </tbody>
+  </v-table>
 </template>
 
 <style scoped></style>

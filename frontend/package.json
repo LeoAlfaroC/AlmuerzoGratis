@@ -10,7 +10,6 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@nuxt/ui": "^2.14.0",
     "@pinia/nuxt": "^0.5.1",
     "nuxt": "^3.10.2",
     "pinia": "^2.1.7",
@@ -18,7 +17,10 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@mdi/font": "^7.4.47",
     "laravel-echo": "^1.16.0",
-    "pusher-js": "^8.4.0-rc2"
+    "pusher-js": "^8.4.0-rc2",
+    "vite-plugin-vuetify": "^2.0.1",
+    "vuetify": "^3.5.5"
   }
 }

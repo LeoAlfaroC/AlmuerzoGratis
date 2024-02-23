@@ -3,29 +3,32 @@
 import {usePurchasesStore} from "~/stores/usePurchasesStore";
 
 const purchasesStore = usePurchasesStore();
-
-const columns = [
-  {
-    key: 'ingredient.name',
-    label: 'Ingrediente',
-  },
-  {
-    key: 'quantity',
-    label: 'Cantidad',
-  },
-];
-
-const selectedColumns = ref([...columns])
 </script>
 
 <template>
   <h2>Compras recientes</h2>
-  <UDivider />
-  <div class="flex px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
-    <USelectMenu v-model="selectedColumns" :options="columns" multiple placeholder="Columnas" />
-  </div>
-  <UDivider />
-  <UTable :rows="purchasesStore.purchases" :columns="selectedColumns"/>
+
+  <v-table>
+    <thead>
+    <tr>
+      <th class="text-left">
+        Name
+      </th>
+      <th class="text-left">
+        Calories
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr
+        v-for="purchase in purchasesStore.purchases"
+        :key="purchase.name"
+    >
+      <td>{{ purchase.ingredient.name }}</td>
+      <td>{{ purchase.quantity }}</td>
+    </tr>
+    </tbody>
+  </v-table>
 </template>
 
 <style scoped></style>

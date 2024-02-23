@@ -8,7 +8,6 @@ definePageMeta({
 
 const {user} = useAuthStore();
 const statusStore = useStatusStore();
-const ordersStore = useOrdersStore();
 
 const {execute} = await useApi('/api/process-order', {method: 'POST', immediate: false});
 const status = ref('');
@@ -20,26 +19,29 @@ async function handleClick() {
 </script>
 
 <template>
-  <div class="mx-auto w-1/3 md:w-1/3 sm:w-1/2">
-  <button
-      class="rounded-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
-      @click="handleClick"
-  >
-    Generar nuevo pedido
-  </button>
-  </div>
-  <br>
-  {{ statusStore.status }}
+  <v-row>
+    <v-col class="text-center">
+      <v-btn
+          @click="handleClick"
+      >
+        Generar nuevo pedido
+      </v-btn>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col class="text-center">
+      {{ statusStore.status }}
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col>
+      <OrderTable/>
+    </v-col>
 
-  <div class="grid grid-cols-2 md:grid-cols-2 sm:grid-cols-1">
-    <div>
-      <OrderTable />
-    </div>
-
-    <div>
-      <PurchasesTable />
-    </div>
-  </div>
+    <v-col>
+      <PurchasesTable/>
+    </v-col>
+  </v-row>
 </template>
 
 <style scoped></style>
