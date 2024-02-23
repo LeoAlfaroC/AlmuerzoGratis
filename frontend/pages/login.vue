@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 const errorMessage = ref();
 const form = ref({
-  email: "test@example.com",
-  password: "password",
+  email: "", //"test@example.com",
+  password: "", //"password",
 });
 
 const auth = useAuthStore();
