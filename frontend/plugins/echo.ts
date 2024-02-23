@@ -56,32 +56,41 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     echo.private('App.Models.User.' + user_id)
       .listen('SendingOrder', () => {
-        console.log('Received!');
+        console.log('SendingOrder');
         statusStore.status = 'Enviando orden';
       })
       .listen('OrdersListed', (e: any) => {
+        console.log('OrdersListed', e);
         ordersStore.orders = e.orders;
       })
       .listen('PurchasesListed', (e: any) => {
+        console.log('PurchasesListed', e);
         purchasesStore.purchases = e.purchases;
       })
       .error((error: any) => console.log(error));
 
-    echo.private('orders')
+    echo.private('new-events')
       .listen('PreparingOrder', (e: any) => {
-        console.log(e);
+        console.log('PreparingOrder', e);
+        ordersStore.addOrUpdateOrder(e.order);
         statusStore.status = 'Preparando orden';
       })
       .listen('CheckingIngredients', (e: any) => {
-        console.log(e);
+        console.log('CheckingIngredients', e);
         statusStore.status = 'Revisando disponibilidad de ingredientes';
       })
       .listen('BuyingIngredients', (e: any) => {
-        console.log(e);
+        console.log('BuyingIngredients', e);
         statusStore.status = 'Comprando ingredientes faltantes';
       })
+      .listen('IngredientPurchased', (e: any) => {
+        console.log('IngredientPurchased', e);
+        purchasesStore.addOrUpdatePurchase(e.purchase);
+        statusStore.status = 'Ingrediente comprado';
+      })
       .listen('OrderReady', (e: any) => {
-        console.log(e);
+        console.log('OrderReady', e);
+        ordersStore.addOrUpdateOrder(e.order);
         statusStore.status = 'Orden lista!';
       });
   }

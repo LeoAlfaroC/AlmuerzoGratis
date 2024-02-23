@@ -18,7 +18,6 @@ class BuyingIngredients implements ShouldBroadcast
      */
     public function __construct(
         readonly public int $order_id,
-        readonly private int $user_id,
     )
     {
         //
@@ -32,7 +31,7 @@ class BuyingIngredients implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('App.Models.User.' . $this->user_id),
+            new PrivateChannel('new-events'),
         ];
     }
 }

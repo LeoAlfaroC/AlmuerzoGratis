@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Events\BuyingIngredients;
 use App\Events\CheckingIngredients;
+use App\Events\IngredientPurchased;
 use App\Models\Ingredient;
 use App\Models\Inventory;
 use App\Models\Purchase;
@@ -34,7 +35,7 @@ class CheckIngredients implements ShouldQueue
      */
     public function handle(MarketService $market_service): void
     {
-        broadcast(new CheckingIngredients($this->order['order_id'], $this->order['user_id']));
+        broadcast(new CheckingIngredients($this->order['order_id']));
 
         DB::beginTransaction();
         $ingredients = Ingredient::query()
@@ -59,20 +60,24 @@ class CheckIngredients implements ShouldQueue
                         $ingredient['ready'] = true;
                         $ingredient['id'] = $ingredient_id;
                     } else {
-                        broadcast(new BuyingIngredients($this->order['order_id'], $this->order['user_id']));
+                        broadcast(new BuyingIngredients($this->order['order_id']));
                         info('BUYING ' . $ingredient['name']);
                         $quantity_bought = $market_service->buyIngredient($ingredient_model);
                         info('BOUGHT ' . $quantity_bought);
 
-                        Purchase::query()
-                            ->create([
-                                'ingredient_id' => $ingredient_id,
-                                'quantity' => $quantity_bought,
-                            ]);
+                        if ($quantity_bought > 0) {
+                            $purchase = Purchase::query()
+                                ->create([
+                                    'ingredient_id' => $ingredient_id,
+                                    'quantity' => $quantity_bought,
+                                ]);
 
-                        Inventory::query()
-                            ->where('ingredient_id', $ingredient_id)
-                            ->increment('quantity', $quantity_bought);
+                            broadcast(new IngredientPurchased($purchase));
+
+                            Inventory::query()
+                                ->where('ingredient_id', $ingredient_id)
+                                ->increment('quantity', $quantity_bought);
+                        }
                     }
                 }
             }

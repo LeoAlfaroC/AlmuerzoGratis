@@ -31,9 +31,14 @@ async function handleClick() {
   <br>
   {{ statusStore.status }}
 
-  <div class="grid md:grid-cols-2 sm:grid-cols-1">
-    <OrderTable />
-    <PurchasesTable />
+  <div class="grid grid-cols-2 md:grid-cols-2 sm:grid-cols-1">
+    <div>
+      <OrderTable />
+    </div>
+
+    <div>
+      <PurchasesTable />
+    </div>
   </div>
 </template>
 

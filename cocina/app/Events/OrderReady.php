@@ -17,8 +17,13 @@ class OrderReady implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct(readonly private Order $order)
+    public function __construct(readonly public Order $order)
     {
+    }
+
+    public function broadcastWith(): array
+    {
+        return ['order' => $this->order->load('recipe')->toArray()];
     }
 
     /**
@@ -29,7 +34,7 @@ class OrderReady implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('App.Models.User.' . $this->order->user_id),
+            new PrivateChannel('new-events'),
         ];
     }
 }

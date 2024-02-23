@@ -28,6 +28,8 @@ class RedisSubscribe extends Command
      */
     public function handle()
     {
+        ini_set('default_socket_timeout', -1);
+
         $redis = Redis::connection('inbound');
         $redis->psubscribe(['storeroom.*'], function (string $message, string $channel) {
             info('New message from redis to Bodega');
