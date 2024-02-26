@@ -1,0 +1,79 @@
+services:
+  frontend:
+    build:
+      context: frontend/docker
+      args:
+        user: frontend
+        uid: 1000
+    ports:
+      - "80:3000"
+    volumes:
+      - ./frontend:/usr/src/app
+
+  api-php:
+    build:
+      context: api/docker/php
+      args:
+        user: api
+        uid: 1000
+    volumes:
+      - ./api:/var/www/html
+    networks:
+      - backend
+
+  api-nginx:
+    build:
+      context: api/docker/nginx
+      args:
+        user: api
+        uid: 1000
+    ports:
+      - "81:80"
+    networks:
+      - backend
+    depends_on:
+      - api-php
+
+  cocina-php:
+    build:
+      context: cocina/docker/php
+      args:
+        user: api
+        uid: 1000
+    volumes:
+      - ./cocina:/var/www/html
+    networks:
+      - backend
+
+  bodega-php:
+    build:
+      context: bodega/docker/php
+      args:
+        user: api
+        uid: 1000
+    volumes:
+      - ./bodega:/var/www/html
+    networks:
+      - backend
+
+  websockets:
+    image: 'quay.io/soketi/soketi:latest-16-alpine'
+    environment:
+      SOKETI_DEBUG: '0'
+      SOKETI_METRICS_SERVER_PORT: '9601'
+    ports:
+      - '${SOKETI_PORT:-6001}:6001'
+      - '${SOKETI_METRICS_SERVER_PORT:-9601}:9601'
+    networks:
+      - backend
+
+  redis:
+    image: redis:7.2.4-alpine
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --requirepass redispassword
+    networks:
+      - backend
+
+networks:
+  backend:
