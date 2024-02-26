@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   devtools: {
     enabled: false,
   },
+  ssr: false,
   runtimeConfig: {
     public: {
       api_url: process.env.API_URL,

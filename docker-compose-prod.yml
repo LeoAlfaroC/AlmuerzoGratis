@@ -1,7 +1,7 @@
 services:
   frontend:
     build:
-      context: frontend/docker
+      context: frontend/docker/production
       args:
         user: frontend
         uid: 1000
