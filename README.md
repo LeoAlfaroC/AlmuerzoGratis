@@ -1,5 +1,5 @@
 # Almuerzo Gratis
-Prueba técnica para alegra.com
+Prueba técnica
 
 # Configuración de entorno de desarrollo
 
